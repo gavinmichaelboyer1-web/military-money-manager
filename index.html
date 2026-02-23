@@ -1,105 +1,645 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <title>Military Money Manager</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-            color: white;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MilBudget</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --panel:rgba(255,255,255,.06);
+      --panel2:rgba(255,255,255,.08);
+      --stroke:rgba(255,255,255,.12);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.65);
+      --good:rgba(70,255,175,.9);
+      --bad:rgba(255,95,95,.95);
+      --brand:rgba(110,168,255,.95);
+      --shadow: 0 18px 40px rgba(0,0,0,.45);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1000px 500px at 20% -10%, rgba(110,168,255,.25), transparent 70%),
+        radial-gradient(900px 500px at 90% 10%, rgba(70,255,175,.18), transparent 70%),
+        radial-gradient(700px 450px at 50% 120%, rgba(255,95,95,.16), transparent 70%),
+        var(--bg);
+      min-height:100vh;
+    }
+    a{color:inherit}
+    .app{
+      display:grid;
+      grid-template-columns: 280px 1fr;
+      min-height:100vh;
+    }
+    .sidebar{
+      padding:18px;
+      border-right:1px solid var(--stroke);
+      background:rgba(0,0,0,.12);
+      backdrop-filter: blur(10px);
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      padding:10px 12px;
+      border:1px solid var(--stroke);
+      border-radius:var(--radius);
+      background:var(--panel);
+      box-shadow: var(--shadow);
+    }
+    .logo{
+      width:38px; height:38px; border-radius:12px;
+      background: linear-gradient(135deg, rgba(110,168,255,.95), rgba(70,255,175,.85));
+      display:grid; place-items:center;
+      font-weight:900; color:#06101f;
+    }
+    .brand h1{font-size:16px; margin:0; line-height:1.1}
+    .brand p{margin:2px 0 0; font-size:12px; color:var(--muted)}
+    .nav{
+      margin-top:14px;
+      display:flex; flex-direction:column; gap:10px;
+    }
+    .nav button{
+      width:100%;
+      text-align:left;
+      border:1px solid var(--stroke);
+      background:var(--panel);
+      color:var(--text);
+      padding:12px 12px;
+      border-radius:14px;
+      cursor:pointer;
+      transition:.15s transform, .15s background, .15s border;
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .nav button:hover{ transform: translateY(-1px); background:var(--panel2) }
+    .nav button.active{ border-color: rgba(110,168,255,.55); background: rgba(110,168,255,.12) }
+    .hint{
+      margin-top:14px;
+      padding:12px;
+      border:1px dashed rgba(255,255,255,.18);
+      border-radius:14px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
+    }
+    .main{
+      padding:22px;
+      max-width: 1100px;
+      width:100%;
+      margin:0 auto;
+    }
+    .topbar{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+      margin-bottom: 16px;
+    }
+    .topbar h2{ margin:0; font-size:22px }
+    .topbar .sub{ margin-top:6px; color:var(--muted); font-size:13px }
+    .pill{
+      display:flex; gap:8px; align-items:center;
+      border:1px solid var(--stroke);
+      background:var(--panel);
+      padding:10px 12px;
+      border-radius:999px;
+    }
+    .pill span{font-size:12px; color:var(--muted)}
+    .pill strong{font-size:12px}
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:14px;
+    }
+    .card{
+      border:1px solid var(--stroke);
+      background:var(--panel);
+      border-radius:var(--radius);
+      padding:14px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+    .card h3{
+      margin:0 0 10px;
+      font-size:13px;
+      color:var(--muted);
+      font-weight:600;
+      display:flex; justify-content:space-between; gap:8px;
+    }
+    .metric{
+      font-size:26px;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+    .metric.good{ color: var(--good) }
+    .metric.bad{ color: var(--bad) }
+    .row{
+      display:flex; gap:10px; flex-wrap:wrap;
+      align-items:center;
+    }
+    .btn{
+      border:1px solid rgba(110,168,255,.45);
+      background: rgba(110,168,255,.16);
+      color: var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      transition:.15s transform, .15s background;
+      font-weight:700;
+      font-size:13px;
+    }
+    .btn:hover{ transform: translateY(-1px); background: rgba(110,168,255,.22) }
+    .btn.secondary{
+      border:1px solid var(--stroke);
+      background: var(--panel);
+      font-weight:650;
+    }
+    .btn.danger{
+      border-color: rgba(255,95,95,.5);
+      background: rgba(255,95,95,.12);
+    }
+    .field{
+      display:flex; flex-direction:column; gap:7px;
+      flex:1;
+      min-width: 180px;
+    }
+    label{ font-size:12px; color:var(--muted) }
+    input, select{
+      width:100%;
+      padding:11px 12px;
+      border-radius:12px;
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.25);
+      color:var(--text);
+      outline:none;
+    }
+    input::placeholder{ color:rgba(255,255,255,.35) }
+    .table{
+      width:100%;
+      border-collapse: collapse;
+      overflow:hidden;
+      border-radius:14px;
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.18);
+    }
+    .table th, .table td{
+      padding:12px 10px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      text-align:left;
+      font-size:13px;
+    }
+    .table th{ color:var(--muted); font-weight:700; font-size:12px }
+    .tag{
+      display:inline-flex; align-items:center; gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      font-size:12px;
+      color:var(--muted);
+    }
+    .split{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:14px;
+    }
+    .progress{
+      height:10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.10);
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .bar{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(110,168,255,.95), rgba(70,255,175,.9));
+    }
+    .muted{ color:var(--muted); font-size:13px; line-height:1.35 }
+    .section{ display:none }
+    .section.active{ display:block }
+    .toast{
+      position:fixed;
+      right:16px;
+      bottom:16px;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.55);
+      color:var(--text);
+      box-shadow: var(--shadow);
+      opacity:0;
+      transform: translateY(8px);
+      transition: .2s;
+      max-width: 320px;
+      pointer-events:none;
+      font-size:13px;
+    }
+    .toast.show{ opacity:1; transform: translateY(0) }
 
-        header {
-            padding: 20px;
-            text-align: center;
-            font-size: 28px;
-            font-weight: bold;
-            background: rgba(0,0,0,0.3);
-        }
-
-        .container {
-            max-width: 500px;
-            margin: 60px auto;
-            background: rgba(255,255,255,0.05);
-            padding: 30px;
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-        }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            background: #00c6ff;
-            color: black;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        button:hover {
-            background: #00aaff;
-        }
-
-        .result {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-        }
-    </style>
+    @media (max-width: 900px){
+      .app{ grid-template-columns: 1fr }
+      .sidebar{ position:sticky; top:0; z-index:10; border-right:none; border-bottom:1px solid var(--stroke) }
+      .nav{ flex-direction:row; flex-wrap:wrap }
+      .nav button{ width:auto; flex:1; min-width: 140px }
+      .split{ grid-template-columns: 1fr }
+    }
+  </style>
 </head>
 <body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">MB</div>
+        <div>
+          <h1>MilBudget</h1>
+          <p>Simple money control for Soldiers & families</p>
+        </div>
+      </div>
 
-<header>
-    Military Money Manager 🇺🇸
-</header>
+      <div class="nav">
+        <button class="active" data-tab="dashboard"><span>🏠 Dashboard</span><span>›</span></button>
+        <button data-tab="income"><span>💰 Income</span><span>›</span></button>
+        <button data-tab="bills"><span>🧾 Bills</span><span>›</span></button>
+        <button data-tab="goals"><span>🎯 Goals</span><span>›</span></button>
+      </div>
 
-<div class="container">
-    <h2>Monthly Budget Calculator</h2>
+      <div class="hint">
+        <strong>Tip:</strong> This is a demo that saves to your browser.
+        Later we can add logins + rank/BAH/BAS automation.
+      </div>
+    </aside>
 
-    <input type="number" id="income" placeholder="Enter Monthly Income">
-    <input type="number" id="expenses" placeholder="Enter Monthly Expenses">
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <h2 id="pageTitle">Dashboard</h2>
+          <div class="sub">Track income, plan bills, and see what’s left — instantly.</div>
+        </div>
+        <div class="pill">
+          <span>Status:</span> <strong id="saveStatus">Saved</strong>
+        </div>
+      </div>
 
-    <button onclick="calculate()">Calculate Remaining</button>
+      <!-- DASHBOARD -->
+      <section id="dashboard" class="section active">
+        <div class="grid">
+          <div class="card" style="grid-column: span 4;">
+            <h3>Monthly Income <span class="tag">editable</span></h3>
+            <div class="metric" id="mIncome">$0.00</div>
+          </div>
 
-    <div class="result" id="result"></div>
-</div>
+          <div class="card" style="grid-column: span 4;">
+            <h3>Total Bills <span class="tag" id="billCount">0 items</span></h3>
+            <div class="metric" id="mBills">$0.00</div>
+          </div>
 
-<script>
-    function calculate() {
-        const income = parseFloat(document.getElementById("income").value);
-        const expenses = parseFloat(document.getElementById("expenses").value);
-        const result = document.getElementById("result");
+          <div class="card" style="grid-column: span 4;">
+            <h3>Remaining</h3>
+            <div class="metric" id="mRemaining">$0.00</div>
+          </div>
 
-        if (!income || !expenses) {
-            result.innerHTML = "Please enter valid numbers.";
-            return;
-        }
+          <div class="card" style="grid-column: span 7;">
+            <h3>Allocated Progress <span class="tag" id="allocTag">0%</span></h3>
+            <div class="progress"><div class="bar" id="allocBar"></div></div>
+            <p class="muted" style="margin:10px 0 0;">
+              This shows how much of your income is assigned to bills + goals.
+            </p>
+          </div>
 
-        const remaining = income - expenses;
-        result.innerHTML = "Remaining: $" + remaining.toFixed(2);
+          <div class="card" style="grid-column: span 5;">
+            <h3>Quick Actions</h3>
+            <div class="row">
+              <button class="btn" id="goIncome">Set Income</button>
+              <button class="btn" id="goBills">Add Bill</button>
+              <button class="btn secondary" id="goGoals">Set Goals</button>
+              <button class="btn danger" id="resetAll">Reset</button>
+            </div>
+            <p class="muted" style="margin:10px 0 0;">
+              Start by setting income, then add bills. Everything updates automatically.
+            </p>
+          </div>
+        </div>
+
+        <div style="height:14px"></div>
+
+        <div class="split">
+          <div class="card">
+            <h3>Next Up (Bills by due date)</h3>
+            <div id="nextBills" class="muted">Add bills to see a schedule here.</div>
+          </div>
+
+          <div class="card">
+            <h3>Summary</h3>
+            <div class="muted" id="summaryText"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- INCOME -->
+      <section id="income" class="section">
+        <div class="card">
+          <h3>Income Settings <span class="tag">Monthly</span></h3>
+          <div class="row">
+            <div class="field">
+              <label>Monthly Income (after taxes)</label>
+              <input id="incomeInput" type="number" min="0" step="0.01" placeholder="Example: 4200" />
+            </div>
+
+            <div class="field">
+              <label>Pay Schedule (for future features)</label>
+              <select id="paySchedule">
+                <option value="monthly">Monthly</option>
+                <option value="1st15th">1st & 15th</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="height:10px"></div>
+          <div class="row">
+            <button class="btn" id="saveIncome">Save Income</button>
+            <button class="btn secondary" id="backDash1">Back to Dashboard</button>
+          </div>
+          <p class="muted" style="margin:10px 0 0;">
+            Tip: Use your take-home pay. Later we can add rank-based base pay + BAH/BAS calculators.
+          </p>
+        </div>
+      </section>
+
+      <!-- BILLS -->
+      <section id="bills" class="section">
+        <div class="card">
+          <h3>Add a Bill</h3>
+          <div class="row">
+            <div class="field">
+              <label>Name</label>
+              <input id="billName" placeholder="Rent, Car, Insurance..." />
+            </div>
+            <div class="field">
+              <label>Amount</label>
+              <input id="billAmount" type="number" min="0" step="0.01" placeholder="Example: 975" />
+            </div>
+            <div class="field">
+              <label>Due</label>
+              <select id="billDue">
+                <option value="1st">1st</option>
+                <option value="15th">15th</option>
+                <option value="monthly">Monthly (anytime)</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="height:10px"></div>
+          <div class="row">
+            <button class="btn" id="addBill">Add Bill</button>
+            <button class="btn secondary" id="backDash2">Back to Dashboard</button>
+          </div>
+        </div>
+
+        <div style="height:14px"></div>
+
+        <div class="card">
+          <h3>Your Bills</h3>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Bill</th>
+                <th>Due</th>
+                <th>Amount</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="billRows">
+              <!-- rows -->
+            </tbody>
+          </table>
+          <p class="muted" style="margin:10px 0 0;">
+            Add everything you pay monthly. You can delete items anytime.
+          </p>
+        </div>
+      </section>
+
+      <!-- GOALS -->
+      <section id="goals" class="section">
+        <div class="card">
+          <h3>Goals (Savings / Extra Paydown)</h3>
+          <div class="row">
+            <div class="field">
+              <label>Monthly Savings Goal</label>
+              <input id="goalSavings" type="number" min="0" step="0.01" placeholder="Example: 300" />
+            </div>
+            <div class="field">
+              <label>Extra Debt Paydown</label>
+              <input id="goalDebt" type="number" min="0" step="0.01" placeholder="Example: 200" />
+            </div>
+          </div>
+
+          <div style="height:10px"></div>
+          <div class="row">
+            <button class="btn" id="saveGoals">Save Goals</button>
+            <button class="btn secondary" id="backDash3">Back to Dashboard</button>
+          </div>
+
+          <p class="muted" style="margin:10px 0 0;">
+            These goals count toward “Allocated Progress” and reduce what’s remaining.
+          </p>
+        </div>
+      </section>
+
+      <div class="toast" id="toast"></div>
+    </main>
+  </div>
+
+  <script>
+    // ---- State & Storage ----
+    const KEY = "milbudget_v1";
+    const state = load() || {
+      income: 0,
+      paySchedule: "monthly",
+      bills: [],
+      goals: { savings: 0, debt: 0 }
+    };
+
+    function load(){
+      try{
+        const raw = localStorage.getItem(KEY);
+        return raw ? JSON.parse(raw) : null;
+      }catch(e){ return null; }
     }
-</script>
+    function save(){
+      localStorage.setItem(KEY, JSON.stringify(state));
+      pulseSaved();
+    }
 
+    // ---- Helpers ----
+    const $ = (id)=>document.getElementById(id);
+    const fmt = (n)=> (Number(n||0)).toLocaleString(undefined,{style:"currency", currency:"USD"});
+    const sumBills = ()=> state.bills.reduce((a,b)=>a+Number(b.amount||0),0);
+    const sumGoals = ()=> Number(state.goals.savings||0) + Number(state.goals.debt||0);
+
+    function toast(msg){
+      const t = $("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(()=>t.classList.remove("show"), 1600);
+    }
+    function pulseSaved(){
+      const s = $("saveStatus");
+      s.textContent = "Saved ✓";
+      setTimeout(()=>{ s.textContent = "Saved"; }, 800);
+    }
+
+    // ---- Tabs ----
+    const buttons = document.querySelectorAll(".nav button");
+    buttons.forEach(btn=>{
+      btn.addEventListener("click", ()=> setTab(btn.dataset.tab));
+    });
+
+    function setTab(tab){
+      document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+      $(tab).classList.add("active");
+      buttons.forEach(b=>b.classList.toggle("active", b.dataset.tab===tab));
+      $("pageTitle").textContent = tab.charAt(0).toUpperCase() + tab.slice(1);
+      render();
+      window.scrollTo({top:0, behavior:"smooth"});
+    }
+
+    // ---- Render ----
+    function render(){
+      // inputs
+      $("incomeInput").value = state.income || "";
+      $("paySchedule").value = state.paySchedule || "monthly";
+      $("goalSavings").value = state.goals.savings || "";
+      $("goalDebt").value = state.goals.debt || "";
+
+      // dashboard metrics
+      const billsTotal = sumBills();
+      const goalsTotal = sumGoals();
+      const allocated = billsTotal + goalsTotal;
+      const remaining = Number(state.income||0) - allocated;
+
+      $("mIncome").textContent = fmt(state.income);
+      $("mBills").textContent = fmt(billsTotal);
+      $("mRemaining").textContent = fmt(remaining);
+
+      $("mRemaining").classList.toggle("good", remaining >= 0);
+      $("mRemaining").classList.toggle("bad", remaining < 0);
+
+      $("billCount").textContent = `${state.bills.length} items`;
+
+      const pct = state.income > 0 ? Math.min(100, Math.max(0, (allocated / state.income) * 100)) : 0;
+      $("allocTag").textContent = `${pct.toFixed(0)}%`;
+      $("allocBar").style.width = `${pct.toFixed(0)}%`;
+
+      // schedule list
+      const order = { "1st": 1, "15th": 2, "monthly": 3 };
+      const sorted = [...state.bills].sort((a,b)=>order[a.due]-order[b.due] || a.name.localeCompare(b.name));
+      if(sorted.length === 0){
+        $("nextBills").textContent = "Add bills to see a schedule here.";
+      } else {
+        $("nextBills").innerHTML =
+          `<div class="muted">Upcoming:</div>` +
+          sorted.slice(0,8).map(b =>
+            `<div style="display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.08)">
+              <div><strong>${escapeHtml(b.name)}</strong> <span class="tag">${labelDue(b.due)}</span></div>
+              <div>${fmt(b.amount)}</div>
+            </div>`
+          ).join("");
+      }
+
+      // summary
+      const parts = [];
+      parts.push(`Income: <strong>${fmt(state.income)}</strong>`);
+      parts.push(`Bills: <strong>${fmt(billsTotal)}</strong>`);
+      if(goalsTotal>0) parts.push(`Goals: <strong>${fmt(goalsTotal)}</strong>`);
+      parts.push(`Remaining: <strong style="color:${remaining>=0?'var(--good)':'var(--bad)'}">${fmt(remaining)}</strong>`);
+      $("summaryText").innerHTML = parts.join("<br>");
+
+      // bills table
+      const rows = $("billRows");
+      rows.innerHTML = "";
+      if(state.bills.length === 0){
+        rows.innerHTML = `<tr><td colspan="4" class="muted">No bills yet. Add one above.</td></tr>`;
+      } else {
+        state.bills.forEach((b, idx)=>{
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td><strong>${escapeHtml(b.name)}</strong></td>
+            <td><span class="tag">${labelDue(b.due)}</span></td>
+            <td>${fmt(b.amount)}</td>
+            <td><button class="btn danger" data-del="${idx}" style="padding:8px 10px;border-radius:10px">Delete</button></td>
+          `;
+          rows.appendChild(tr);
+        });
+        rows.querySelectorAll("button[data-del]").forEach(btn=>{
+          btn.addEventListener("click", ()=>{
+            const i = Number(btn.dataset.del);
+            state.bills.splice(i,1);
+            save(); render(); toast("Bill deleted");
+          });
+        });
+      }
+    }
+
+    function labelDue(d){
+      if(d==="1st") return "Due 1st";
+      if(d==="15th") return "Due 15th";
+      return "Monthly";
+    }
+    function escapeHtml(str){
+      return String(str||"").replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+    }
+
+    // ---- Actions ----
+    $("saveIncome").addEventListener("click", ()=>{
+      state.income = Number($("incomeInput").value || 0);
+      state.paySchedule = $("paySchedule").value;
+      save(); render(); toast("Income saved");
+      setTab("dashboard");
+    });
+
+    $("addBill").addEventListener("click", ()=>{
+      const name = $("billName").value.trim();
+      const amount = Number($("billAmount").value || 0);
+      const due = $("billDue").value;
+
+      if(!name){ toast("Add a bill name"); return; }
+      if(!(amount > 0)){ toast("Enter a valid amount"); return; }
+
+      state.bills.push({ name, amount, due });
+      $("billName").value = "";
+      $("billAmount").value = "";
+      $("billDue").value = "1st";
+
+      save(); render(); toast("Bill added");
+    });
+
+    $("saveGoals").addEventListener("click", ()=>{
+      state.goals.savings = Number($("goalSavings").value || 0);
+      state.goals.debt = Number($("goalDebt").value || 0);
+      save(); render(); toast("Goals saved");
+      setTab("dashboard");
+    });
+
+    // quick nav
+    $("goIncome").addEventListener("click", ()=>setTab("income"));
+    $("goBills").addEventListener("click", ()=>setTab("bills"));
+    $("goGoals").addEventListener("click", ()=>setTab("goals"));
+    $("backDash1").addEventListener("click", ()=>setTab("dashboard"));
+    $("backDash2").addEventListener("click", ()=>setTab("dashboard"));
+    $("backDash3").addEventListener("click", ()=>setTab("dashboard"));
+
+    $("resetAll").addEventListener("click", ()=>{
+      if(!confirm("Reset MilBudget demo data?")) return;
+      state.income = 0;
+      state.paySchedule = "monthly";
+      state.bills = [];
+      state.goals = { savings: 0, debt: 0 };
+      save(); render(); toast("Reset complete");
+    });
+
+    // initial render
+    render();
+  </script>
 </body>
 </html>
