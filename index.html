@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Military Money Manager</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #111;
+      color: white;
+      text-align: center;
+      padding: 50px;
+    }
+    .card {
+      background: #1f1f1f;
+      padding: 30px;
+      border-radius: 10px;
+      width: 300px;
+      margin: auto;
+    }
+    input {
+      padding: 10px;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px;
+      width: 100%;
+      background: #2ecc71;
+      border: none;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #27ae60;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Military Money Manager</h1>
+
+<div class="card">
+  <h2>Monthly Budget</h2>
+  <input type="number" id="income" placeholder="Monthly Income">
+  <input type="number" id="rent" placeholder="Rent">
+  <input type="number" id="car" placeholder="Car Payment">
+  <button onclick="calculate()">Calculate</button>
+  <h3 id="result"></h3>
+</div>
+
+<script>
+function calculate() {
+  let income = parseFloat(document.getElementById("income").value) || 0;
+  let rent = parseFloat(document.getElementById("rent").value) || 0;
+  let car = parseFloat(document.getElementById("car").value) || 0;
+
+  let leftover = income - rent - car;
+  document.getElementById("result").innerText =
+    "Money Left: $" + leftover;
+}
+</script>
+
+</body>
+</html>
