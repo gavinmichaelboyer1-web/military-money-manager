@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>MilBudget</title>
   <meta name="description" content="MilBudget - simple money control for Soldiers & families." />
+
   <style>
     :root{
       --bg:#0b1220;
@@ -22,14 +23,16 @@
       --shadow: 0 18px 42px rgba(0,0,0,.5);
       --radius:18px;
       --radius2:22px;
+
       --btn: rgba(110,168,255,.16);
       --btnstroke: rgba(110,168,255,.45);
+
       --chip: rgba(255,255,255,.07);
       --chipstroke: rgba(255,255,255,.14);
+
       --gridgap: 14px;
     }
 
-    /* Light theme */
     [data-theme="light"]{
       --bg:#f5f7ff;
       --bg2:#eef2ff;
@@ -59,7 +62,7 @@
         linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
       min-height:100vh;
     }
-    a{color:inherit}
+
     .app{
       display:grid;
       grid-template-columns: 300px 1fr;
@@ -74,6 +77,11 @@
       backdrop-filter: blur(10px);
     }
     [data-theme="light"] .sidebar{ background:rgba(255,255,255,.55); }
+
+    .brandLink{
+      display:block;
+      text-decoration:none;
+    }
     .brand{
       display:flex; align-items:center; gap:10px;
       padding:12px 12px;
@@ -81,7 +89,10 @@
       border-radius: var(--radius2);
       background:var(--panel);
       box-shadow: var(--shadow);
+      cursor:pointer;
+      transition: .15s transform, .15s background;
     }
+    .brand:hover{ transform: translateY(-1px); background: var(--panel2); }
     .logo{
       width:40px; height:40px;
       border-radius:14px;
@@ -93,6 +104,7 @@
     }
     .brand h1{font-size:16px; margin:0; line-height:1.1}
     .brand p{margin:2px 0 0; font-size:12px; color:var(--muted)}
+
     .chips{
       margin-top:12px;
       display:flex; gap:8px; flex-wrap:wrap;
@@ -114,6 +126,12 @@
     .dot.good{background: var(--good); border-color: rgba(0,0,0,.1)}
     .dot.warn{background: var(--warn); border-color: rgba(0,0,0,.1)}
     .dot.bad{background: var(--bad); border-color: rgba(0,0,0,.1)}
+
+    /* Moved higher: Quick Tour + Profile buttons */
+    .sideActions{
+      margin-top:12px;
+      display:flex; gap:10px; flex-wrap:wrap;
+    }
 
     .nav{
       margin-top:14px;
@@ -157,21 +175,44 @@
 
     /* Main */
     .main{
-      padding:22px;
+      padding:0 22px 22px;
       max-width: 1180px;
       width:100%;
       margin:0 auto;
     }
+
+    /* Branded top border/header strip */
+    .topStripe{
+      height: 14px;
+      border-radius: 0 0 18px 18px;
+      margin: 0 -22px 16px;
+      background:
+        linear-gradient(90deg,
+          rgba(110,168,255,.95),
+          rgba(70,255,175,.90),
+          rgba(255,208,112,.88),
+          rgba(110,168,255,.95)
+        );
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+      border-bottom:1px solid rgba(255,255,255,.12);
+    }
+    [data-theme="light"] .topStripe{
+      border-bottom-color: rgba(0,0,0,.10);
+      box-shadow: 0 10px 30px rgba(0,0,0,.12);
+    }
+
     .topbar{
       display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
       margin-bottom: 16px;
     }
     .titleBlock h2{ margin:0; font-size:22px; letter-spacing:-.02em }
     .titleBlock .sub{ margin-top:6px; color:var(--muted); font-size:13px; line-height:1.35}
+
     .toolbar{
       display:flex; gap:10px; align-items:center; flex-wrap:wrap;
       justify-content:flex-end;
     }
+
     .pill{
       display:flex; gap:8px; align-items:center;
       border:1px solid var(--stroke);
@@ -216,6 +257,13 @@
     }
     .btn.small{ padding:8px 10px; border-radius:12px; font-size:12px; font-weight:800; }
 
+    /* Special Quick Tour color */
+    .btn.tour{
+      border-color: rgba(70,255,175,.55);
+      background: rgba(70,255,175,.16);
+    }
+    .btn.tour:hover{ background: rgba(70,255,175,.22); }
+
     .grid{
       display:grid;
       grid-template-columns: repeat(12, 1fr);
@@ -239,19 +287,25 @@
       align-items:center;
       gap:8px;
     }
-    .tag{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding:6px 10px;
-      border-radius:999px;
+
+    /* Clickable tags */
+    .tagBtn{
       border:1px solid var(--chipstroke);
       background: var(--chip);
-      font-size:12px;
       color: var(--muted);
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
       font-weight:750;
+      cursor:pointer;
+      display:inline-flex;
+      gap:6px;
+      align-items:center;
       white-space:nowrap;
+      transition:.15s transform, .15s background;
     }
+    .tagBtn:hover{ transform: translateY(-1px); background: var(--panel2); }
+
     .metric{
       font-size:28px;
       font-weight:900;
@@ -259,7 +313,6 @@
     }
     .metric.good{ color: var(--good) }
     .metric.bad{ color: var(--bad) }
-    .metric.warn{ color: var(--warn) }
 
     .row{
       display:flex; gap:10px; flex-wrap:wrap;
@@ -289,8 +342,6 @@
       background: rgba(255,255,255,.72);
     }
     textarea{ min-height: 88px; resize: vertical; }
-    input::placeholder{ color:rgba(255,255,255,.35) }
-    [data-theme="light"] input::placeholder{ color:rgba(0,0,0,.35) }
 
     .muted{ color:var(--muted); font-size:13px; line-height:1.35 }
     .muted2{ color:var(--muted2); font-size:12px; line-height:1.35 }
@@ -346,13 +397,7 @@
     }
     .table tr:last-child td{ border-bottom:none; }
 
-    .pillRow{
-      display:flex; gap:8px; flex-wrap:wrap; align-items:center;
-    }
-
-    .kpiRow{
-      display:flex; gap:10px; flex-wrap:wrap;
-    }
+    .kpiRow{ display:flex; gap:10px; flex-wrap:wrap; }
     .kpi{
       flex:1; min-width: 170px;
       padding:10px 12px;
@@ -367,7 +412,7 @@
     .toast{
       position:fixed;
       right:16px;
-      bottom:16px;
+      bottom: calc(16px + env(safe-area-inset-bottom, 0px));
       padding:12px 14px;
       border-radius:16px;
       border:1px solid var(--stroke);
@@ -380,10 +425,12 @@
       max-width: 360px;
       pointer-events:none;
       font-size:13px;
+      z-index: 60;
     }
     [data-theme="light"] .toast{ background: rgba(255,255,255,.88); }
     .toast.show{ opacity:1; transform: translateY(0) }
 
+    /* Modal */
     .modalBack{
       position:fixed; inset:0;
       background: rgba(0,0,0,.55);
@@ -391,10 +438,10 @@
       align-items:center;
       justify-content:center;
       padding:16px;
-      z-index:50;
+      z-index:70;
     }
     .modal{
-      width:min(720px, 100%);
+      width:min(760px, 100%);
       border-radius:22px;
       border:1px solid var(--stroke);
       background: rgba(0,0,0,.28);
@@ -429,11 +476,12 @@
       cursor:help;
     }
 
-    /* Mobile */
+    /* Mobile bottom nav */
     .mobileNav{
       display:none;
       position:fixed;
-      left:12px; right:12px; bottom:12px;
+      left:12px; right:12px;
+      bottom: calc(12px + env(safe-area-inset-bottom, 0px));
       border:1px solid var(--stroke);
       background: rgba(0,0,0,.20);
       backdrop-filter: blur(14px);
@@ -449,23 +497,37 @@
       border:1px solid var(--stroke);
       background: var(--panel);
       color: var(--text);
-      padding:10px 10px;
+      padding:12px 10px;
       border-radius:14px;
-      font-weight:850;
+      font-weight:900;
       font-size:12px;
       cursor:pointer;
     }
     .mobileNav button.active{ border-color: rgba(110,168,255,.62); background: rgba(110,168,255,.12) }
 
+    canvas{ width:100%; height:180px; display:block; }
+
+    /* Mobile improvements */
     @media (max-width: 960px){
       .app{ grid-template-columns: 1fr }
       .sidebar{ display:none }
       .mobileNav{ display:flex }
-      .main{ padding-bottom: 92px; }
+      .main{
+        padding: 0 14px 110px;
+      }
+      .topStripe{ margin: 0 -14px 14px; border-radius: 0 0 16px 16px; }
       .split2{ grid-template-columns: 1fr; }
+      .grid{ gap: 12px; }
+      .card{ padding: 14px; border-radius: 20px; }
+      .toolbar{ gap: 8px; }
+      .btn{
+        padding: 12px 12px;
+        border-radius: 16px;
+      }
+      .pill{ display:none; }
+      .metric{ font-size: 26px; }
+      .field{ min-width: 160px; }
     }
-
-    canvas{ width:100%; height:180px; display:block; }
   </style>
 </head>
 
@@ -473,18 +535,26 @@
   <div class="app" id="appRoot">
     <!-- SIDEBAR -->
     <aside class="sidebar">
-      <div class="brand">
-        <div class="logo">MB</div>
-        <div>
-          <h1>MilBudget</h1>
-          <p>Simple money control for Soldiers & families</p>
+      <a class="brandLink" href="#" id="logoHome">
+        <div class="brand" title="Go to Dashboard">
+          <div class="logo">MB</div>
+          <div>
+            <h1>MilBudget</h1>
+            <p>Simple money control for Soldiers & families</p>
+          </div>
         </div>
-      </div>
+      </a>
 
       <div class="chips">
         <div class="chip"><span class="dot" id="chipDot"></span><span id="chipStatus">Ready</span></div>
         <div class="chip">Auto-save</div>
-        <div class="chip">Demo v1</div>
+        <div class="chip" id="userChip">Guest</div>
+      </div>
+
+      <!-- moved HIGHER -->
+      <div class="sideActions">
+        <button class="btn tour" id="btnTour">✨ Quick tour</button>
+        <button class="btn secondary" id="btnGoProfile">🪖 Profile</button>
       </div>
 
       <div class="nav" style="margin-top:12px">
@@ -492,23 +562,25 @@
         <button data-tab="pay"><span>🗓️ Payday Split</span><small>1st / 15th</small></button>
         <button data-tab="bills"><span>🧾 Bills</span><small>due dates</small></button>
         <button data-tab="debts"><span>💳 Debts</span><small>payoff</small></button>
-        <button data-tab="goals"><span>🎯 Goals</span><small>savings</small></button>
-        <button data-tab="profile"><span>🪖 Profile</span><small>pay setup</small></button>
+        <button data-tab="goals"><span>🎯 Goals</span><small>buckets</small></button>
+        <button data-tab="profile"><span>🪖 Pay Setup</span><small>rank / spouse</small></button>
         <button data-tab="settings"><span>⚙️ Settings</span><small>export</small></button>
       </div>
 
       <div class="hint">
-        <b>Tomorrow demo tip:</b> click <b>Settings → Load Demo Data</b> so your friends can explore instantly.
+        <b>Demo tip:</b> Settings → <b>Load Demo Data</b> so your friends can test fast.
       </div>
 
       <div class="sidebarFooter">
         <button class="btn secondary small" id="btnTheme">🌓 Theme</button>
-        <button class="btn secondary small" id="btnTour">✨ Quick tour</button>
+        <button class="btn secondary small" id="btnLogin">🔐 Login (demo)</button>
       </div>
     </aside>
 
     <!-- MAIN -->
     <main class="main">
+      <div class="topStripe" aria-hidden="true"></div>
+
       <div class="topbar">
         <div class="titleBlock">
           <h2 id="pageTitle">Dashboard</h2>
@@ -516,6 +588,9 @@
         </div>
         <div class="toolbar">
           <div class="pill"><span>Status:</span> <strong id="saveStatus">Saved</strong></div>
+
+          <!-- NEW: Add Income button -->
+          <button class="btn secondary" id="btnAddIncome">➕ Add Income</button>
           <button class="btn secondary" id="btnAddBill">➕ Add Bill</button>
           <button class="btn secondary" id="btnAddDebt">➕ Add Debt</button>
         </div>
@@ -525,25 +600,34 @@
       <section id="dashboard" class="section active">
         <div class="grid">
           <div class="card" style="grid-column: span 4;">
-            <h3>Monthly Income <span class="tag">take-home</span></h3>
+            <h3>
+              Monthly Income
+              <button class="tagBtn" id="tagIncome">editable →</button>
+            </h3>
             <div class="metric" id="mIncome">$0.00</div>
-            <div class="muted2" id="incomeHint">Set income in Profile.</div>
+            <div class="muted2" id="incomeHint">Set income in Pay Setup.</div>
           </div>
 
           <div class="card" style="grid-column: span 4;">
-            <h3>Total Bills <span class="tag" id="billCount">0 items</span></h3>
+            <h3>
+              Total Bills
+              <button class="tagBtn" id="tagBills">0 items →</button>
+            </h3>
             <div class="metric" id="mBills">$0.00</div>
             <div class="muted2" id="billHint">Add bills to get accurate remaining.</div>
           </div>
 
           <div class="card" style="grid-column: span 4;">
-            <h3>Remaining <span class="tag">after plans</span></h3>
+            <h3>
+              Remaining
+              <button class="tagBtn" id="tagPaySplit">view split →</button>
+            </h3>
             <div class="metric" id="mRemaining">$0.00</div>
-            <div class="muted2" id="remainHint">Bills + goals + debt payments.</div>
+            <div class="muted2">Bills + goals + debt payments.</div>
           </div>
 
           <div class="card" style="grid-column: span 7;">
-            <h3>Allocation Progress <span class="tag" id="allocTag">0%</span></h3>
+            <h3>Allocation Progress <button class="tagBtn" id="tagGoals">goals →</button></h3>
             <div class="progress"><div class="bar" id="allocBar"></div></div>
             <div style="height:10px"></div>
             <div class="kpiRow">
@@ -561,21 +645,21 @@
               </div>
             </div>
             <div class="muted" style="margin-top:10px">
-              The goal is simple: assign money to what matters, and see what’s left.
+              Assign money to what matters, and see what’s left.
             </div>
           </div>
 
           <div class="card" style="grid-column: span 5;">
             <h3>Quick Actions</h3>
             <div class="row">
-              <button class="btn" id="qaProfile">🪖 Setup Profile</button>
+              <button class="btn" id="qaProfile">🪖 Setup Pay</button>
               <button class="btn" id="qaPay">🗓️ Payday Split</button>
-              <button class="btn secondary" id="qaBills">🧾 Manage Bills</button>
-              <button class="btn secondary" id="qaDebts">💳 Manage Debts</button>
+              <button class="btn secondary" id="qaBills">🧾 Bills</button>
+              <button class="btn secondary" id="qaDebts">💳 Debts</button>
               <button class="btn danger" id="qaReset">Reset</button>
             </div>
             <div class="muted" style="margin-top:10px">
-              If this is your first time, start with <b>Profile</b>.
+              First time? Start with <b>Pay Setup</b>.
             </div>
           </div>
         </div>
@@ -584,16 +668,16 @@
 
         <div class="split2">
           <div class="card">
-            <h3>Visual Breakdown <span class="tag">this month</span></h3>
+            <h3>Visual Breakdown <span class="tagBtn" id="tagSettings">share/export →</span></h3>
             <canvas id="pie"></canvas>
-            <div class="pillRow" style="margin-top:10px" id="pieLegend"></div>
+            <div id="pieLegend" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"></div>
           </div>
 
           <div class="card">
-            <h3>Next Up <span class="tag">due dates</span></h3>
+            <h3>Next Up <span class="tagBtn" id="tagBills2">due dates →</span></h3>
             <div class="muted" id="nextUp">Add bills to see what hits first.</div>
             <div class="divider"></div>
-            <h3>Notes <span class="tag">optional</span></h3>
+            <h3>Notes</h3>
             <textarea id="notes" placeholder="Example: 'Pay car early if paycheck hits late.'"></textarea>
             <div class="muted2" style="margin-top:8px">Autosaves.</div>
           </div>
@@ -605,39 +689,27 @@
         <div class="card">
           <h3>
             Payday Split (1st / 15th)
-            <span class="tag" id="payModeTag">Mode: 1st & 15th</span>
+            <span class="tagBtn" id="tagGoBills">adjust bills →</span>
           </h3>
           <div class="muted">
-            This shows exactly what hits each paycheck. Monthly bills are split 50/50 by default (simple and realistic).
+            Bills due 1st hit Paycheck #1. Bills due 15th hit Paycheck #2. Monthly bills are split 50/50 (simple).
           </div>
 
           <div style="height:12px"></div>
 
           <div class="kpiRow">
-            <div class="kpi">
-              <div class="t">Paycheck #1</div>
-              <div class="v" id="p1Income">$0.00</div>
-            </div>
-            <div class="kpi">
-              <div class="t">Paycheck #2</div>
-              <div class="v" id="p2Income">$0.00</div>
-            </div>
-            <div class="kpi">
-              <div class="t">Monthly Bills Split</div>
-              <div class="v" id="pMonthlySplit">$0.00 / $0.00</div>
-            </div>
-            <div class="kpi">
-              <div class="t">Remaining After Paychecks</div>
-              <div class="v" id="pRemainCombined">$0.00</div>
-            </div>
+            <div class="kpi"><div class="t">Paycheck #1</div><div class="v" id="p1Income">$0.00</div></div>
+            <div class="kpi"><div class="t">Paycheck #2</div><div class="v" id="p2Income">$0.00</div></div>
+            <div class="kpi"><div class="t">Monthly bills split</div><div class="v" id="pMonthlySplit">$0.00 / $0.00</div></div>
+            <div class="kpi"><div class="t">Remaining combined</div><div class="v" id="pRemainCombined">$0.00</div></div>
           </div>
 
           <div style="height:14px"></div>
 
           <div class="split2">
             <div class="card" style="box-shadow:none;">
-              <h3>Paycheck #1 (1st) <span class="tag" id="p1Tag">Bills due 1st + half monthly</span></h3>
-              <div class="muted2" id="p1Summary"></div>
+              <h3>Paycheck #1 (1st)</h3>
+              <div class="muted2">Includes 1st bills + half monthly bills + half goals + half debt payments.</div>
               <div style="height:10px"></div>
               <table class="table">
                 <thead><tr><th>Item</th><th>Type</th><th>Amount</th></tr></thead>
@@ -651,8 +723,8 @@
             </div>
 
             <div class="card" style="box-shadow:none;">
-              <h3>Paycheck #2 (15th) <span class="tag" id="p2Tag">Bills due 15th + half monthly</span></h3>
-              <div class="muted2" id="p2Summary"></div>
+              <h3>Paycheck #2 (15th)</h3>
+              <div class="muted2">Includes 15th bills + half monthly bills + half goals + half debt payments.</div>
               <div style="height:10px"></div>
               <table class="table">
                 <thead><tr><th>Item</th><th>Type</th><th>Amount</th></tr></thead>
@@ -670,7 +742,7 @@
 
           <div class="row">
             <button class="btn secondary" id="btnGoBills">🧾 Add/Adjust Bills</button>
-            <button class="btn secondary" id="btnGoProfile">🪖 Adjust Pay</button>
+            <button class="btn secondary" id="btnGoProfile2">🪖 Adjust Pay</button>
           </div>
         </div>
       </section>
@@ -678,20 +750,11 @@
       <!-- BILLS -->
       <section id="bills" class="section">
         <div class="card">
-          <h3>
-            Bills
-            <span class="tag">rent, car, insurance, subscriptions</span>
-          </h3>
+          <h3>Bills <span class="tagBtn" id="tagQuickAdd">quick add →</span></h3>
 
           <div class="row">
-            <div class="field">
-              <label>Bill name</label>
-              <input id="billName" placeholder="Rent, Car Payment, Phone..." />
-            </div>
-            <div class="field">
-              <label>Amount</label>
-              <input id="billAmount" type="number" min="0" step="0.01" placeholder="975" />
-            </div>
+            <div class="field"><label>Bill name</label><input id="billName" placeholder="Rent, Car Payment, Phone..." /></div>
+            <div class="field"><label>Amount</label><input id="billAmount" type="number" min="0" step="0.01" placeholder="975" /></div>
             <div class="field">
               <label>Due date</label>
               <select id="billDue">
@@ -723,10 +786,7 @@
           <div class="divider"></div>
 
           <div class="row">
-            <div class="field">
-              <label>Search</label>
-              <input id="billSearch" placeholder="Type to filter (rent, car, etc.)" />
-            </div>
+            <div class="field"><label>Search</label><input id="billSearch" placeholder="Type to filter (rent, car, etc.)" /></div>
             <div class="field">
               <label>Sort</label>
               <select id="billSort">
@@ -742,20 +802,12 @@
           <div style="height:10px"></div>
 
           <table class="table">
-            <thead>
-              <tr>
-                <th>Bill</th>
-                <th>Category</th>
-                <th>Due</th>
-                <th>Amount</th>
-                <th></th>
-              </tr>
-            </thead>
+            <thead><tr><th>Bill</th><th>Category</th><th>Due</th><th>Amount</th><th></th></tr></thead>
             <tbody id="billRows"></tbody>
           </table>
 
           <div class="muted2" style="margin-top:10px">
-            Tip: “Monthly (flex)” bills are split 50/50 across paychecks in the Payday Split view.
+            Monthly (flex) bills split 50/50 across paychecks in Payday Split.
           </div>
         </div>
       </section>
@@ -763,28 +815,13 @@
       <!-- DEBTS -->
       <section id="debts" class="section">
         <div class="card">
-          <h3>
-            Debts
-            <span class="tag">payments & payoff estimate</span>
-          </h3>
+          <h3>Debts <span class="tagBtn" id="tagDebtStrategy">strategy →</span></h3>
 
           <div class="row">
-            <div class="field">
-              <label>Debt name</label>
-              <input id="debtName" placeholder="Camry Loan, Credit Card..." />
-            </div>
-            <div class="field">
-              <label>Balance</label>
-              <input id="debtBal" type="number" min="0" step="0.01" placeholder="8000" />
-            </div>
-            <div class="field">
-              <label>APR % <span class="help" title="Used for payoff estimate. If you don’t know, set 0.">?</span></label>
-              <input id="debtApr" type="number" min="0" step="0.01" placeholder="6.00" />
-            </div>
-            <div class="field">
-              <label>Monthly payment</label>
-              <input id="debtPay" type="number" min="0" step="0.01" placeholder="502" />
-            </div>
+            <div class="field"><label>Debt name</label><input id="debtName" placeholder="Camry Loan, Credit Card..." /></div>
+            <div class="field"><label>Balance</label><input id="debtBal" type="number" min="0" step="0.01" placeholder="8000" /></div>
+            <div class="field"><label>APR %</label><input id="debtApr" type="number" min="0" step="0.01" placeholder="6.00" /></div>
+            <div class="field"><label>Monthly payment</label><input id="debtPay" type="number" min="0" step="0.01" placeholder="502" /></div>
           </div>
 
           <div style="height:10px"></div>
@@ -796,10 +833,7 @@
           <div class="divider"></div>
 
           <div class="row">
-            <div class="field">
-              <label>Extra monthly paydown (applies to highest APR first)</label>
-              <input id="extraDebt" type="number" min="0" step="0.01" placeholder="0" />
-            </div>
+            <div class="field"><label>Extra monthly paydown</label><input id="extraDebt" type="number" min="0" step="0.01" placeholder="0" /></div>
             <div class="field">
               <label>Payoff strategy</label>
               <select id="debtStrategy">
@@ -819,21 +853,12 @@
           <div style="height:12px"></div>
 
           <table class="table">
-            <thead>
-              <tr>
-                <th>Debt</th>
-                <th>Balance</th>
-                <th>APR</th>
-                <th>Payment</th>
-                <th>Est. months</th>
-                <th></th>
-              </tr>
-            </thead>
+            <thead><tr><th>Debt</th><th>Balance</th><th>APR</th><th>Payment</th><th>Est. months</th><th></th></tr></thead>
             <tbody id="debtRows"></tbody>
           </table>
 
           <div class="muted2" style="margin-top:10px">
-            Note: payoff is an estimate using a simple interest model (good enough for a demo & planning).
+            Payoff estimates are approximate (good for planning + demo).
           </div>
         </div>
       </section>
@@ -841,32 +866,16 @@
       <!-- GOALS -->
       <section id="goals" class="section">
         <div class="card">
-          <h3>
-            Goals
-            <span class="tag">savings + spending buckets</span>
-          </h3>
+          <h3>Goals <span class="tagBtn" id="tagBackDash">dashboard →</span></h3>
 
           <div class="row">
-            <div class="field">
-              <label>Emergency fund (monthly)</label>
-              <input id="gEmergency" type="number" min="0" step="0.01" placeholder="200" />
-            </div>
-            <div class="field">
-              <label>Investing (monthly)</label>
-              <input id="gInvest" type="number" min="0" step="0.01" placeholder="100" />
-            </div>
-            <div class="field">
-              <label>Fun money (monthly)</label>
-              <input id="gFun" type="number" min="0" step="0.01" placeholder="150" />
-            </div>
-            <div class="field">
-              <label>Groceries (monthly)</label>
-              <input id="gGroc" type="number" min="0" step="0.01" placeholder="300" />
-            </div>
+            <div class="field"><label>Emergency fund (monthly)</label><input id="gEmergency" type="number" min="0" step="0.01" placeholder="200" /></div>
+            <div class="field"><label>Investing (monthly)</label><input id="gInvest" type="number" min="0" step="0.01" placeholder="100" /></div>
+            <div class="field"><label>Fun money (monthly)</label><input id="gFun" type="number" min="0" step="0.01" placeholder="150" /></div>
+            <div class="field"><label>Groceries (monthly)</label><input id="gGroc" type="number" min="0" step="0.01" placeholder="300" /></div>
           </div>
 
           <div style="height:10px"></div>
-
           <div class="row">
             <button class="btn" id="saveGoals">💾 Save Goals</button>
             <button class="btn secondary" id="zeroGoals">Zero All</button>
@@ -876,26 +885,19 @@
 
           <div class="kpiRow">
             <div class="kpi"><div class="t">Goals total</div><div class="v" id="goalsTotal">$0.00</div></div>
-            <div class="kpi"><div class="t">Suggested savings rate</div><div class="v" id="saveRate">—</div></div>
+            <div class="kpi"><div class="t">Goals as % of income</div><div class="v" id="saveRate">—</div></div>
             <div class="kpi"><div class="t">Left after goals</div><div class="v" id="leftAfterGoals">$0.00</div></div>
-          </div>
-
-          <div class="muted" style="margin-top:10px">
-            These buckets make the app feel “real” and help users plan beyond bills.
           </div>
         </div>
       </section>
 
-      <!-- PROFILE -->
+      <!-- PROFILE / PAY SETUP -->
       <section id="profile" class="section">
         <div class="card">
-          <h3>
-            Profile / Pay Setup
-            <span class="tag">manual + optional rank helper</span>
-          </h3>
+          <h3>Pay Setup <span class="tagBtn" id="tagToPay">payday split →</span></h3>
 
           <div class="muted">
-            For the demo, you can keep it simple: set your <b>monthly take-home</b> and pay schedule.
+            Set your take-home pay + (optional) military details. Automations are <b>demo</b> and always allow manual override.
           </div>
 
           <div style="height:12px"></div>
@@ -909,16 +911,21 @@
               </select>
             </div>
             <div class="field">
-              <label>Monthly take-home income</label>
+              <label>Your monthly take-home income (main number)</label>
               <input id="incomeMonthly" type="number" min="0" step="0.01" placeholder="4200" />
             </div>
             <div class="field">
-              <label>Optional: Rank helper (demo)</label>
-              <select id="rank">
-                <option value="">— Select —</option>
-                <option value="E1">E-1</option><option value="E2">E-2</option><option value="E3">E-3</option>
-                <option value="E4">E-4</option><option value="E5">E-5</option><option value="E6">E-6</option>
-                <option value="E7">E-7</option><option value="E8">E-8</option><option value="E9">E-9</option>
+              <label>Spouse income included?</label>
+              <select id="spouseEnabled">
+                <option value="no">No</option>
+                <option value="yes">Yes</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Spouse type</label>
+              <select id="spouseType">
+                <option value="civilian">Civilian</option>
+                <option value="military">Military</option>
               </select>
             </div>
           </div>
@@ -927,32 +934,92 @@
 
           <div class="row">
             <div class="field">
-              <label>Optional: Monthly BAS (manual)</label>
-              <input id="bas" type="number" min="0" step="0.01" placeholder="460" />
+              <label>Spouse monthly take-home income</label>
+              <input id="spouseIncome" type="number" min="0" step="0.01" placeholder="0" />
             </div>
             <div class="field">
-              <label>Optional: Monthly BAH (manual)</label>
-              <input id="bah" type="number" min="0" step="0.01" placeholder="1600" />
+              <label>Dependents</label>
+              <select id="dependents">
+                <option value="0">0</option><option value="1">1</option><option value="2">2</option>
+                <option value="3">3</option><option value="4">4</option><option value="5">5+</option>
+              </select>
             </div>
             <div class="field">
-              <label>Optional: Base pay (manual)</label>
-              <input id="basePay" type="number" min="0" step="0.01" placeholder="2300" />
+              <label>Has dependents for BAH?</label>
+              <select id="bahDependents">
+                <option value="no">No</option>
+                <option value="yes">Yes</option>
+              </select>
             </div>
             <div class="field">
-              <label>Calculated monthly total <span class="help" title="If you use Base+BAH+BAS, we’ll show the total. Your take-home is still the main number.">?</span></label>
-              <input id="calcTotal" disabled />
+              <label>Duty station (demo)</label>
+              <select id="dutyStation">
+                <option value="fort_bliss">Fort Bliss (demo)</option>
+                <option value="custom">Custom (manual)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <h3>Military Pay Helpers (demo) <span class="help" title="These are placeholders for demo. Manual overrides are always available. Real tables can be added later.">?</span></h3>
+
+          <div class="row">
+            <div class="field">
+              <label>Rank (demo helper)</label>
+              <select id="rank">
+                <option value="">— Select —</option>
+                <option value="E1">E-1</option><option value="E2">E-2</option><option value="E3">E-3</option>
+                <option value="E4">E-4</option><option value="E5">E-5</option><option value="E6">E-6</option>
+                <option value="E7">E-7</option><option value="E8">E-8</option><option value="E9">E-9</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Receive BAS?</label>
+              <select id="basEnabled">
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Base pay (manual override)</label>
+              <input id="basePay" type="number" min="0" step="0.01" placeholder="0" />
+            </div>
+            <div class="field">
+              <label>BAH (manual override)</label>
+              <input id="bah" type="number" min="0" step="0.01" placeholder="0" />
             </div>
           </div>
 
           <div style="height:10px"></div>
 
           <div class="row">
-            <button class="btn" id="saveProfile">💾 Save Profile</button>
-            <button class="btn secondary" id="applyRank">🪖 Auto-fill base pay (demo)</button>
+            <div class="field">
+              <label>BAS (manual override)</label>
+              <input id="bas" type="number" min="0" step="0.01" placeholder="0" />
+            </div>
+            <div class="field">
+              <label>Calculated military total (base+BAH+BAS)</label>
+              <input id="calcTotal" disabled />
+            </div>
+            <div class="field">
+              <label>Total household take-home used in app</label>
+              <input id="householdTotal" disabled />
+            </div>
+            <div class="field">
+              <label>Shortcut</label>
+              <button class="btn secondary" id="btnUseCalcAsIncome">Use calc total as take-home</button>
+            </div>
+          </div>
+
+          <div style="height:10px"></div>
+          <div class="row">
+            <button class="btn" id="saveProfile">💾 Save Pay Setup</button>
+            <button class="btn secondary" id="applyRank">🪖 Auto-fill base/BAH/BAS (demo)</button>
           </div>
 
           <div class="muted2" style="margin-top:10px">
-            Next version: real pay tables + duty station BAH lookup.
+            Later upgrade: real pay tables + duty-station BAH lookup + multiple military members.
           </div>
         </div>
       </section>
@@ -960,10 +1027,7 @@
       <!-- SETTINGS -->
       <section id="settings" class="section">
         <div class="card">
-          <h3>
-            Settings / Share
-            <span class="tag">export • import • demo</span>
-          </h3>
+          <h3>Settings / Share</h3>
 
           <div class="row">
             <button class="btn secondary" id="btnExport">📤 Export Data</button>
@@ -975,17 +1039,7 @@
 
           <div class="divider"></div>
 
-          <h3>What to ask your friends tomorrow</h3>
-          <div class="muted">
-            1) Is the flow easy? (Profile → Bills → Payday Split)<br/>
-            2) What features would make you pay $2–$5/month?<br/>
-            3) What’s missing for military life? (PCS, deployment, SCRA, TSP, etc.)<br/>
-            4) What screen is confusing?
-          </div>
-
-          <div class="divider"></div>
-
-          <h3>Feedback Notes (for you)</h3>
+          <h3>Feedback Notes</h3>
           <textarea id="feedbackNotes" placeholder="Type what your friends say… this saves here."></textarea>
         </div>
       </section>
@@ -1017,24 +1071,39 @@
 
   <script>
     // ============
-    // MilBudget v1 - single file demo
+    // MilBudget v1.01 - requested UX updates + mobile polish
     // ============
 
-    const KEY = "milbudget_full_v1";
+    const KEY = "milbudget_full_v101";
     const $ = (id)=>document.getElementById(id);
     const fmt = (n)=> (Number(n||0)).toLocaleString(undefined,{style:"currency", currency:"USD"});
     const clamp = (n,min,max)=>Math.min(max,Math.max(min,n));
     const nowISO = ()=> new Date().toISOString();
 
+    // Demo helper tables (placeholders)
+    const basePayDemo = { E1:2000, E2:2250, E3:2500, E4:2900, E5:3300, E6:3800, E7:4500, E8:5200, E9:6000 };
+    const basDemoEnlisted = 460; // demo placeholder
+    const bahDemo = {
+      fort_bliss: { with: 1600, without: 1200 } // demo placeholder
+    };
+
     const state = load() || {
       meta: { created: nowISO(), updated: nowISO() },
       theme: "dark",
+      user: { name: "Guest" }, // demo "login"
       notes: "",
       feedbackNotes: "",
       profile: {
         paySchedule: "1st15th",
-        monthlyIncome: 0, // take-home main number
+        monthlyIncome: 0,         // USER take-home
+        spouseEnabled: "no",
+        spouseType: "civilian",
+        spouseIncome: 0,
+        dependents: "0",
+        bahDependents: "no",
+        dutyStation: "fort_bliss",
         rank: "",
+        basEnabled: "yes",
         basePay: 0,
         bah: 0,
         bas: 0
@@ -1053,9 +1122,9 @@
       state.meta.updated = nowISO();
       localStorage.setItem(KEY, JSON.stringify(state));
       pulseSaved();
+      updateUserChip();
     }
 
-    // ---- UI helpers
     function toast(msg){
       const t = $("toast");
       t.textContent = msg;
@@ -1064,6 +1133,7 @@
     }
     function pulseSaved(){
       const s = $("saveStatus");
+      if(!s) return;
       s.textContent = "Saved ✓";
       setTimeout(()=>{ s.textContent = "Saved"; }, 800);
     }
@@ -1075,7 +1145,7 @@
       renderAll();
     }
 
-    // ---- Navigation
+    // Navigation
     const sections = ["dashboard","pay","bills","debts","goals","profile","settings"];
     function setTab(tab){
       sections.forEach(id => $(id).classList.toggle("active", id===tab));
@@ -1088,7 +1158,7 @@
         bills:["Bills","Manage due dates and totals."],
         debts:["Debts","Track payments & payoff estimates."],
         goals:["Goals","Buckets for saving + spending."],
-        profile:["Profile","Set your pay + schedule."],
+        profile:["Pay Setup","Rank/BAH/BAS + spouse + dependents."],
         settings:["Settings","Export, import, demo data, and printing."]
       };
       $("pageTitle").textContent = titles[tab][0];
@@ -1101,31 +1171,143 @@
     document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click", ()=>setTab(b.dataset.tab)));
     document.querySelectorAll("#mobileNav button").forEach(b=>b.addEventListener("click", ()=>setTab(b.dataset.tab)));
 
-    // ---- Calculations
-    function billsTotal(){
-      return state.bills.reduce((a,b)=>a+Number(b.amount||0),0);
+    // Brand logo → dashboard
+    $("logoHome").addEventListener("click", (e)=>{ e.preventDefault(); setTab("dashboard"); });
+
+    // Clickable tag shortcuts
+    $("tagIncome").addEventListener("click", ()=>setTab("profile"));
+    $("tagBills").addEventListener("click", ()=>setTab("bills"));
+    $("tagBills2").addEventListener("click", ()=>setTab("bills"));
+    $("tagPaySplit").addEventListener("click", ()=>setTab("pay"));
+    $("tagGoals").addEventListener("click", ()=>setTab("goals"));
+    $("tagSettings").addEventListener("click", ()=>setTab("settings"));
+    $("tagGoBills").addEventListener("click", ()=>setTab("bills"));
+    $("tagBackDash").addEventListener("click", ()=>setTab("dashboard"));
+    $("tagToPay").addEventListener("click", ()=>setTab("pay"));
+
+    // Top toolbar buttons
+    $("btnAddIncome").addEventListener("click", ()=>setTab("profile"));
+    $("btnAddBill").addEventListener("click", ()=>setTab("bills"));
+    $("btnAddDebt").addEventListener("click", ()=>setTab("debts"));
+
+    // Sidebar top actions
+    $("btnGoProfile").addEventListener("click", ()=>setTab("profile"));
+
+    // Quick actions
+    $("qaProfile").addEventListener("click", ()=>setTab("profile"));
+    $("qaPay").addEventListener("click", ()=>setTab("pay"));
+    $("qaBills").addEventListener("click", ()=>setTab("bills"));
+    $("qaDebts").addEventListener("click", ()=>setTab("debts"));
+    $("qaReset").addEventListener("click", ()=>{
+      openModal("Reset MilBudget?", `<div class="muted">This clears your local demo data.</div>`, [
+        {label:"Cancel", kind:"secondary", onClick: closeModal},
+        {label:"Reset", kind:"danger", onClick: ()=>{
+          localStorage.removeItem(KEY);
+          location.reload();
+        }}
+      ]);
+    });
+
+    // Buttons on Payday Split section
+    $("btnGoBills").addEventListener("click", ()=>setTab("bills"));
+    $("btnGoProfile2").addEventListener("click", ()=>setTab("profile"));
+
+    // Notes
+    $("notes").addEventListener("input", ()=>{
+      state.notes = $("notes").value;
+      save();
+    });
+    $("feedbackNotes").addEventListener("input", ()=>{
+      state.feedbackNotes = $("feedbackNotes").value;
+      save();
+    });
+
+    // Modal framework
+    function openModal(title, bodyHTML, actions=[], afterOpen){
+      $("modalTitle").textContent = title;
+      $("modalBody").innerHTML = bodyHTML;
+
+      const act = $("modalActions");
+      act.innerHTML = "";
+      actions.forEach(a=>{
+        const btn = document.createElement("button");
+        btn.className = "btn " + (a.kind || "");
+        btn.textContent = a.label;
+        btn.addEventListener("click", a.onClick);
+        act.appendChild(btn);
+      });
+
+      $("modalBack").style.display = "flex";
+      if(afterOpen) setTimeout(afterOpen, 0);
     }
-    function debtMonthlyTotal(){
-      return state.debts.reduce((a,d)=>a+Number(d.payment||0),0);
+    function closeModal(){ $("modalBack").style.display = "none"; }
+    $("modalClose").addEventListener("click", closeModal);
+    $("modalBack").addEventListener("click", (e)=>{ if(e.target.id==="modalBack") closeModal(); });
+
+    // Theme
+    $("btnTheme").addEventListener("click", ()=>{
+      setTheme(state.theme==="light" ? "dark" : "light");
+    });
+
+    // Quick tour (now special color, and prominent)
+    $("btnTour").addEventListener("click", ()=>{
+      openModal("Quick Tour ✨", `
+        <div class="muted">
+          <b>1)</b> Go to <b>Pay Setup</b> and set your take-home + pay schedule (and spouse if needed).<br/><br/>
+          <b>2)</b> Add your <b>Bills</b> (rent, cars, insurance, phone).<br/><br/>
+          <b>3)</b> Check <b>Payday Split</b> to see what hits each paycheck.<br/><br/>
+          <b>4)</b> Add <b>Debts</b> to track payments and payoff estimates.<br/><br/>
+          <b>5)</b> Set <b>Goals</b> for savings and spending buckets.
+        </div>
+      `, [{label:"Got it", kind:"", onClick: closeModal}]);
+    });
+
+    // Login (demo-only)
+    function updateUserChip(){
+      const c = $("userChip");
+      if(c) c.textContent = state.user?.name ? state.user.name : "Guest";
     }
+    $("btnLogin").addEventListener("click", ()=>{
+      openModal("Login (demo)", `
+        <div class="muted2">This is a demo-only local profile. Real accounts need a backend.</div>
+        <div style="height:10px"></div>
+        <div class="row">
+          <div class="field">
+            <label>Profile name</label>
+            <input id="loginName" placeholder="Gavin / Karly / Tester" value="${escapeHtml(state.user?.name||"Guest")}">
+          </div>
+        </div>
+      `, [
+        {label:"Cancel", kind:"secondary", onClick: closeModal},
+        {label:"Save", kind:"", onClick: ()=>{
+          state.user = { name: ($("loginName").value.trim() || "Guest") };
+          save(); closeModal(); toast("Profile saved");
+        }}
+      ]);
+    });
+
+    // Calculations
+    function billsTotal(){ return state.bills.reduce((a,b)=>a+Number(b.amount||0),0); }
+    function debtMonthlyTotal(){ return state.debts.reduce((a,d)=>a+Number(d.payment||0),0); }
     function goalsTotal(){
       const g = state.goals;
       return Number(g.emergency||0)+Number(g.invest||0)+Number(g.fun||0)+Number(g.groceries||0);
     }
-    function monthlyIncome(){
-      return Number(state.profile.monthlyIncome||0);
+
+    function userIncome(){ return Number(state.profile.monthlyIncome||0); }
+    function spouseIncome(){
+      return (state.profile.spouseEnabled==="yes") ? Number(state.profile.spouseIncome||0) : 0;
     }
-    function remaining(){
-      return monthlyIncome() - (billsTotal()+goalsTotal()+debtMonthlyTotal());
+    function householdIncome(){
+      return userIncome() + spouseIncome();
     }
 
-    // Payday split logic:
-    // - If pay schedule is 1st/15th: income split 50/50.
-    // - Bills due 1st -> paycheck 1, due 15th -> paycheck 2
-    // - Bills monthly -> split 50/50
-    // - Debt payments + goals split 50/50 (simple)
+    function remaining(){
+      return householdIncome() - (billsTotal()+goalsTotal()+debtMonthlyTotal());
+    }
+
     function paydaySplit(){
-      const inc = monthlyIncome();
+      const inc = householdIncome();
       const p1inc = inc/2;
       const p2inc = inc/2;
 
@@ -1154,8 +1336,7 @@
       };
     }
 
-    // Simple payoff estimate months:
-    // Uses monthly interest approximation and simulates months.
+    // Debts payoff estimate
     function estimatePayoffMonths(balance, apr, payment){
       balance = Number(balance||0);
       apr = Number(apr||0);
@@ -1174,13 +1355,11 @@
       return months >= 1000 ? Infinity : months;
     }
 
-    // Debt plan simulation (avalanche/snowball) for overall estimate
     function estimateTotalPayoff(){
       if(state.debts.length === 0) return "—";
       const extra = Number(state.debtPlan.extra||0);
       const strat = state.debtPlan.strategy || "avalanche";
 
-      // Clone debts
       let debts = state.debts.map(d=>({
         name:d.name,
         bal:Number(d.balance||0),
@@ -1192,16 +1371,13 @@
 
       let months = 0;
       while(debts.some(d=>d.bal>0) && months < 1200){
-        // Pick target
         debts = debts.filter(d=>d.bal>0);
         debts.sort((a,b)=>{
           if(strat==="snowball") return a.bal - b.bal;
-          // avalanche
           return b.apr - a.apr || b.bal - a.bal;
         });
         const target = debts[0];
 
-        // Apply one month
         for(const d of debts){
           const r = (d.apr/100)/12;
           const interest = d.bal * r;
@@ -1216,12 +1392,12 @@
       return months + " months";
     }
 
-    // ---- Rendering
+    // Status chip
     function renderStatusChip(){
       const rem = remaining();
       const dot = $("chipDot");
       const text = $("chipStatus");
-      if(monthlyIncome() <= 0){
+      if(householdIncome() <= 0){
         dot.className = "dot warn";
         text.textContent = "Set income";
         return;
@@ -1238,8 +1414,9 @@
       }
     }
 
+    // Render dashboard
     function renderDashboard(){
-      const inc = monthlyIncome();
+      const inc = householdIncome();
       const b = billsTotal();
       const g = goalsTotal();
       const d = debtMonthlyTotal();
@@ -1256,17 +1433,19 @@
       $("kGoals").textContent = fmt(g);
       $("kDebtPay").textContent = fmt(d);
 
-      $("billCount").textContent = `${state.bills.length} items`;
+      $("tagBills").textContent = `${state.bills.length} items →`;
+      $("incomeHint").textContent =
+        inc>0
+          ? `Household = you ${fmt(userIncome())}${spouseIncome()>0 ? ` + spouse ${fmt(spouseIncome())}` : ""}`
+          : "Set income in Pay Setup.";
 
-      $("incomeHint").textContent = inc>0 ? `Schedule: ${state.profile.paySchedule==="1st15th"?"1st & 15th":"Monthly"}` : "Set income in Profile.";
       $("billHint").textContent = state.bills.length ? "Bills loaded." : "Add bills to get accurate remaining.";
 
       const alloc = b+g+d;
       const pct = inc>0 ? clamp((alloc/inc)*100, 0, 140) : 0;
-      $("allocTag").textContent = (inc>0 ? pct.toFixed(0) : 0) + "%";
       $("allocBar").style.width = clamp(pct,0,100).toFixed(0) + "%";
 
-      // Next up bills (sorted)
+      // Next up bills
       const order = { "1st":1, "15th":2, "monthly":3 };
       const sorted = [...state.bills].sort((x,y)=> (order[x.due]-order[y.due]) || (y.amount-x.amount) || x.name.localeCompare(y.name));
       if(sorted.length===0){
@@ -1274,36 +1453,33 @@
       } else {
         const top = sorted.slice(0,6).map(b=>(
           `<div style="display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.10)">
-            <div><b>${escapeHtml(b.name)}</b> <span class="tag">${labelDue(b.due)}</span> <span class="tag">${escapeHtml(b.category||"Other")}</span></div>
+            <div><b>${escapeHtml(b.name)}</b> <span style="opacity:.8">(${labelDue(b.due)})</span></div>
             <div>${fmt(b.amount)}</div>
           </div>`
         )).join("");
         $("nextUp").innerHTML = top + (sorted.length>6 ? `<div class="muted2" style="padding-top:10px">+${sorted.length-6} more</div>` : "");
       }
 
-      // Notes
       $("notes").value = state.notes || "";
       $("feedbackNotes").value = state.feedbackNotes || "";
 
       renderPie();
       renderStatusChip();
+      updateUserChip();
     }
 
     function renderPay(){
-      const mode = state.profile.paySchedule || "1st15th";
-      $("payModeTag").textContent = "Mode: " + (mode==="1st15th" ? "1st & 15th" : "Monthly");
-      const inc = monthlyIncome();
+      const inc = householdIncome();
       if(inc <= 0){
         $("p1Income").textContent = fmt(0);
         $("p2Income").textContent = fmt(0);
         $("pMonthlySplit").textContent = fmt(0) + " / " + fmt(0);
         $("pRemainCombined").textContent = fmt(0);
-        $("p1Rows").innerHTML = `<tr><td colspan="3" class="muted">Set income in Profile.</td></tr>`;
-        $("p2Rows").innerHTML = `<tr><td colspan="3" class="muted">Set income in Profile.</td></tr>`;
+        $("p1Rows").innerHTML = `<tr><td colspan="3" class="muted">Set income in Pay Setup.</td></tr>`;
+        $("p2Rows").innerHTML = `<tr><td colspan="3" class="muted">Set income in Pay Setup.</td></tr>`;
         return;
       }
 
-      // If monthly mode, still show split as a planning tool.
       const s = paydaySplit();
       $("p1Income").textContent = fmt(s.p1inc);
       $("p2Income").textContent = fmt(s.p2inc);
@@ -1318,9 +1494,6 @@
       $("p1Left").style.color = s.p1Left>=0 ? "var(--good)" : "var(--bad)";
       $("p2Left").style.color = s.p2Left>=0 ? "var(--good)" : "var(--bad)";
       $("pRemainCombined").style.color = (s.p1Left+s.p2Left)>=0 ? "var(--good)" : "var(--bad)";
-
-      $("p1Summary").textContent = `Includes 1st bills + half of monthly bills + half goals + half debt payments.`;
-      $("p2Summary").textContent = `Includes 15th bills + half of monthly bills + half goals + half debt payments.`;
 
       const monthlyBills = state.bills.filter(b=>b.due==="monthly");
       const b1 = state.bills.filter(b=>b.due==="1st");
@@ -1353,15 +1526,15 @@
     }
 
     function row3(a,b,c){
-      return `<tr><td><b>${escapeHtml(a)}</b></td><td><span class="tag">${escapeHtml(b)}</span></td><td>${fmt(c)}</td></tr>`;
+      return `<tr><td><b>${escapeHtml(a)}</b></td><td>${escapeHtml(b)}</td><td>${fmt(c)}</td></tr>`;
     }
-
     function labelDue(d){
       if(d==="1st") return "Due 1st";
       if(d==="15th") return "Due 15th";
       return "Monthly";
     }
 
+    // Bills render
     function renderBills(){
       const search = ($("billSearch").value || "").trim().toLowerCase();
       const sort = $("billSort").value || "due";
@@ -1394,8 +1567,8 @@
           return `
             <tr>
               <td><b>${escapeHtml(b.name)}</b></td>
-              <td><span class="tag">${escapeHtml(b.category||"Other")}</span></td>
-              <td><span class="tag">${labelDue(b.due)}</span></td>
+              <td>${escapeHtml(b.category||"Other")}</td>
+              <td>${labelDue(b.due)}</td>
               <td>${fmt(b.amount)}</td>
               <td style="text-align:right">
                 <button class="btn small secondary" onclick="editBill('${b.id}')">Edit</button>
@@ -1407,15 +1580,14 @@
       }
     }
 
+    // Debts render
     function renderDebts(){
-      // totals
       const total = state.debts.reduce((a,d)=>a+Number(d.balance||0),0);
       const monthly = debtMonthlyTotal();
       $("debtTotal").textContent = fmt(total);
       $("debtMonthly").textContent = fmt(monthly);
       $("debtPayoff").textContent = estimateTotalPayoff();
 
-      // inputs reflect plan
       $("extraDebt").value = state.debtPlan.extra ?? 0;
       $("debtStrategy").value = state.debtPlan.strategy || "avalanche";
 
@@ -1432,7 +1604,7 @@
               <td>${fmt(d.balance)}</td>
               <td>${Number(d.apr||0).toFixed(2)}%</td>
               <td>${fmt(d.payment)}</td>
-              <td><span class="tag">${mText}</span></td>
+              <td>${mText}</td>
               <td style="text-align:right">
                 <button class="btn small secondary" onclick="editDebt('${d.id}')">Edit</button>
                 <button class="btn small danger" onclick="delDebt('${d.id}')">Delete</button>
@@ -1443,6 +1615,7 @@
       }
     }
 
+    // Goals render
     function renderGoals(){
       const g = state.goals;
       $("gEmergency").value = g.emergency ?? 0;
@@ -1453,76 +1626,76 @@
       const gt = goalsTotal();
       $("goalsTotal").textContent = fmt(gt);
 
-      const inc = monthlyIncome();
+      const inc = householdIncome();
       const suggested = inc>0 ? (gt/inc)*100 : 0;
       $("saveRate").textContent = inc>0 ? suggested.toFixed(0) + "% of income" : "—";
 
-      const left = monthlyIncome() - (billsTotal()+debtMonthlyTotal()+gt);
+      const left = householdIncome() - (billsTotal()+debtMonthlyTotal()+gt);
       $("leftAfterGoals").textContent = fmt(left);
       $("leftAfterGoals").style.color = left>=0 ? "var(--good)" : "var(--bad)";
     }
 
+    // Profile render + helpers
     function renderProfile(){
-      $("paySchedule").value = state.profile.paySchedule || "1st15th";
-      $("incomeMonthly").value = state.profile.monthlyIncome ?? 0;
-      $("rank").value = state.profile.rank || "";
-      $("basePay").value = state.profile.basePay ?? 0;
-      $("bah").value = state.profile.bah ?? 0;
-      $("bas").value = state.profile.bas ?? 0;
+      const p = state.profile;
+      $("paySchedule").value = p.paySchedule || "1st15th";
+      $("incomeMonthly").value = p.monthlyIncome ?? 0;
+      $("spouseEnabled").value = p.spouseEnabled || "no";
+      $("spouseType").value = p.spouseType || "civilian";
+      $("spouseIncome").value = p.spouseIncome ?? 0;
+      $("dependents").value = p.dependents || "0";
+      $("bahDependents").value = p.bahDependents || "no";
+      $("dutyStation").value = p.dutyStation || "fort_bliss";
 
-      const calc = Number(state.profile.basePay||0) + Number(state.profile.bah||0) + Number(state.profile.bas||0);
+      $("rank").value = p.rank || "";
+      $("basEnabled").value = p.basEnabled || "yes";
+      $("basePay").value = p.basePay ?? 0;
+      $("bah").value = p.bah ?? 0;
+      $("bas").value = p.bas ?? 0;
+
+      updateCalcBoxes();
+    }
+
+    function updateCalcBoxes(){
+      const base = Number($("basePay").value||0);
+      const bah = Number($("bah").value||0);
+      const bas = Number($("bas").value||0);
+      const calc = base+bah+bas;
       $("calcTotal").value = calc>0 ? fmt(calc) : "";
+      $("householdTotal").value = fmt(householdIncome());
     }
 
-    function renderAll(){
-      renderDashboard();
-      renderPay();
-      renderBills();
-      renderDebts();
-      renderGoals();
-      renderProfile();
-      renderStatusChip();
-    }
-
-    // ---- Pie chart (canvas)
+    // Pie chart
     function renderPie(){
       const canvas = $("pie");
       const ctx = canvas.getContext("2d");
 
-      // handle retina scaling
       const dpr = window.devicePixelRatio || 1;
       const rect = canvas.getBoundingClientRect();
       canvas.width = Math.floor(rect.width * dpr);
       canvas.height = Math.floor(180 * dpr);
+      ctx.setTransform(1,0,0,1,0,0);
       ctx.scale(dpr, dpr);
 
-      const inc = monthlyIncome();
+      const inc = householdIncome();
       const b = billsTotal();
       const g = goalsTotal();
       const d = debtMonthlyTotal();
       const rem = Math.max(0, remaining());
 
       const parts = [
-        {name:"Bills", val:b},
-        {name:"Goals", val:g},
-        {name:"Debt", val:d},
-        {name:"Remaining", val:rem}
+        {name:"Bills", val:b, color:"rgba(110,168,255,.95)"},
+        {name:"Goals", val:g, color:"rgba(70,255,175,.92)"},
+        {name:"Debt", val:d, color:"rgba(255,208,112,.95)"},
+        {name:"Remaining", val:rem, color:"rgba(255,255,255,.20)"}
       ];
       const total = parts.reduce((a,p)=>a+p.val,0);
 
-      // Background ring
       ctx.clearRect(0,0,rect.width,180);
       const cx = rect.width/2;
       const cy = 90;
       const r = 62;
 
-      // Soft shadow circle
-      ctx.beginPath();
-      ctx.arc(cx,cy,r+8,0,Math.PI*2);
-      ctx.fillStyle = "rgba(0,0,0,.08)";
-      ctx.fill();
-
-      // If no data
       if(total <= 0){
         ctx.beginPath();
         ctx.arc(cx,cy,r,0,Math.PI*2);
@@ -1532,39 +1705,29 @@
         ctx.font = "800 12px ui-sans-serif, system-ui";
         ctx.textAlign = "center";
         ctx.fillText("Add income to see chart", cx, cy+4);
-        $("pieLegend").innerHTML = `<span class="tag">No data</span>`;
+        $("pieLegend").innerHTML = `<span class="muted2">No data</span>`;
         return;
       }
 
-      const colors = [
-        "rgba(110,168,255,.95)", // bills
-        "rgba(70,255,175,.92)",  // goals
-        "rgba(255,208,112,.95)", // debt
-        "rgba(255,255,255,.20)"  // remaining
-      ];
-
       let start = -Math.PI/2;
-      parts.forEach((p,i)=>{
+      parts.forEach((p)=>{
         const angle = (p.val/total)*Math.PI*2;
         ctx.beginPath();
         ctx.moveTo(cx,cy);
         ctx.arc(cx,cy,r,start,start+angle);
         ctx.closePath();
-        ctx.fillStyle = colors[i];
+        ctx.fillStyle = p.color;
         ctx.fill();
         start += angle;
       });
 
-      // donut hole
       ctx.beginPath();
       ctx.arc(cx,cy,38,0,Math.PI*2);
-      ctx.fillStyle = "rgba(0,0,0,.22)";
-      if(document.documentElement.getAttribute("data-theme")==="light"){
-        ctx.fillStyle = "rgba(255,255,255,.88)";
-      }
+      ctx.fillStyle = (document.documentElement.getAttribute("data-theme")==="light")
+        ? "rgba(255,255,255,.88)"
+        : "rgba(0,0,0,.22)";
       ctx.fill();
 
-      // center text
       ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text');
       ctx.font = "900 14px ui-sans-serif, system-ui";
       ctx.textAlign = "center";
@@ -1573,23 +1736,24 @@
       ctx.font = "900 12px ui-sans-serif, system-ui";
       ctx.fillText(fmt(inc), cx, cy+16);
 
-      // legend
-      const leg = parts.map((p,i)=>{
+      $("pieLegend").innerHTML = parts.map(p=>{
         const pct = (p.val/total)*100;
-        return `<span class="tag"><span style="width:10px;height:10px;border-radius:99px;background:${colors[i]};display:inline-block"></span>${p.name}: ${pct.toFixed(0)}%</span>`;
+        return `<span class="tagBtn" style="cursor:default">
+          <span style="width:10px;height:10px;border-radius:99px;background:${p.color};display:inline-block"></span>
+          ${p.name}: ${pct.toFixed(0)}%
+        </span>`;
       }).join(" ");
-      $("pieLegend").innerHTML = leg;
     }
 
-    // ---- Escape
+    // Escape
     function escapeHtml(str){
       return String(str||"").replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
     }
 
-    // ---- Bills CRUD
-    function uuid(){
-      return Math.random().toString(16).slice(2) + "-" + Math.random().toString(16).slice(2);
-    }
+    // IDs
+    function uuid(){ return Math.random().toString(16).slice(2) + "-" + Math.random().toString(16).slice(2); }
+
+    // Bills CRUD
     window.delBill = (id)=>{
       state.bills = state.bills.filter(b=>b.id!==id);
       save(); renderAll(); toast("Bill deleted");
@@ -1616,7 +1780,6 @@
             </select>
           </div>
         </div>
-        <div class="muted2" style="margin-top:10px">Tip: Monthly bills split 50/50 in Payday Split.</div>
       `, [
         {label:"Cancel", kind:"secondary", onClick: closeModal},
         {label:"Save", kind:"", onClick: ()=>{
@@ -1632,7 +1795,7 @@
       });
     }
 
-    // ---- Debts CRUD
+    // Debts CRUD
     window.delDebt = (id)=>{
       state.debts = state.debts.filter(d=>d.id!==id);
       save(); renderAll(); toast("Debt deleted");
@@ -1659,79 +1822,7 @@
       ]);
     }
 
-    // ---- Modal framework
-    function openModal(title, bodyHTML, actions=[], afterOpen){
-      $("modalTitle").textContent = title;
-      $("modalBody").innerHTML = bodyHTML;
-
-      const act = $("modalActions");
-      act.innerHTML = "";
-      actions.forEach(a=>{
-        const btn = document.createElement("button");
-        btn.className = "btn " + (a.kind || "");
-        btn.textContent = a.label;
-        btn.addEventListener("click", a.onClick);
-        act.appendChild(btn);
-      });
-
-      $("modalBack").style.display = "flex";
-      if(afterOpen) setTimeout(afterOpen, 0);
-    }
-    function closeModal(){ $("modalBack").style.display = "none"; }
-    $("modalClose").addEventListener("click", closeModal);
-    $("modalBack").addEventListener("click", (e)=>{ if(e.target.id==="modalBack") closeModal(); });
-
-    // ---- Events / Actions
-    $("btnTheme").addEventListener("click", ()=>{
-      setTheme(state.theme==="light" ? "dark" : "light");
-    });
-
-    $("btnTour").addEventListener("click", ()=>{
-      openModal("Quick Tour ✨", `
-        <div class="muted">
-          <b>1)</b> Go to <b>Profile</b> and set monthly take-home + pay schedule.<br/><br/>
-          <b>2)</b> Add your <b>Bills</b> (rent, cars, insurance, phone).<br/><br/>
-          <b>3)</b> Check <b>Payday Split</b> to see what hits each paycheck.<br/><br/>
-          <b>4)</b> Add <b>Debts</b> to track payments and payoff estimates.<br/><br/>
-          <b>5)</b> Set <b>Goals</b> for savings and spending buckets.
-        </div>
-      `, [{label:"Got it", kind:"", onClick: closeModal}]);
-    });
-
-    // Quick actions
-    $("qaProfile").addEventListener("click", ()=>setTab("profile"));
-    $("qaPay").addEventListener("click", ()=>setTab("pay"));
-    $("qaBills").addEventListener("click", ()=>setTab("bills"));
-    $("qaDebts").addEventListener("click", ()=>setTab("debts"));
-    $("qaReset").addEventListener("click", ()=>{
-      openModal("Reset MilBudget?", `<div class="muted">This clears your local demo data.</div>`, [
-        {label:"Cancel", kind:"secondary", onClick: closeModal},
-        {label:"Reset", kind:"danger", onClick: ()=>{
-          localStorage.removeItem(KEY);
-          location.reload();
-        }}
-      ]);
-    });
-
-    // Notes autosave
-    $("notes").addEventListener("input", ()=>{
-      state.notes = $("notes").value;
-      save();
-    });
-    $("feedbackNotes").addEventListener("input", ()=>{
-      state.feedbackNotes = $("feedbackNotes").value;
-      save();
-    });
-
-    // Toolbar quick add
-    $("btnAddBill").addEventListener("click", ()=>setTab("bills"));
-    $("btnAddDebt").addEventListener("click", ()=>setTab("debts"));
-
-    // Payday page navigation buttons
-    $("btnGoBills").addEventListener("click", ()=>setTab("bills"));
-    $("btnGoProfile").addEventListener("click", ()=>setTab("profile"));
-
-    // Bills
+    // Bills events
     $("addBill").addEventListener("click", ()=>{
       const name = $("billName").value.trim();
       const amount = Number($("billAmount").value||0);
@@ -1755,7 +1846,28 @@
     $("billSearch").addEventListener("input", renderBills);
     $("billSort").addEventListener("change", renderBills);
 
-    // Debts
+    // Quick add helper
+    $("tagQuickAdd").addEventListener("click", ()=>{
+      openModal("Quick Add Bills", `
+        <div class="muted">Tap to add common bills.</div>
+        <div style="height:10px"></div>
+        <div class="row">
+          <button class="btn secondary" id="qRent">Add Rent (1st)</button>
+          <button class="btn secondary" id="qCar">Add Car (15th)</button>
+          <button class="btn secondary" id="qIns">Add Insurance (1st)</button>
+          <button class="btn secondary" id="qPhone">Add Phone (Monthly)</button>
+          <button class="btn secondary" id="qNet">Add Internet (Monthly)</button>
+        </div>
+      `, [{label:"Close", kind:"secondary", onClick: closeModal}], ()=>{
+        $("qRent").onclick = ()=>{ state.bills.push({id:uuid(),name:"Rent",amount:975,due:"1st",category:"Housing"}); save(); renderAll(); toast("Added Rent"); };
+        $("qCar").onclick  = ()=>{ state.bills.push({id:uuid(),name:"Car Payment",amount:502,due:"15th",category:"Transportation"}); save(); renderAll(); toast("Added Car"); };
+        $("qIns").onclick  = ()=>{ state.bills.push({id:uuid(),name:"Insurance",amount:250,due:"1st",category:"Insurance"}); save(); renderAll(); toast("Added Insurance"); };
+        $("qPhone").onclick= ()=>{ state.bills.push({id:uuid(),name:"Phone",amount:85,due:"monthly",category:"Phone/Internet"}); save(); renderAll(); toast("Added Phone"); };
+        $("qNet").onclick  = ()=>{ state.bills.push({id:uuid(),name:"Internet",amount:60,due:"monthly",category:"Utilities"}); save(); renderAll(); toast("Added Internet"); };
+      });
+    });
+
+    // Debts events
     $("addDebt").addEventListener("click", ()=>{
       const name = $("debtName").value.trim();
       const balance = Number($("debtBal").value||0);
@@ -1763,7 +1875,6 @@
       const payment = Number($("debtPay").value||0);
       if(!name){ toast("Add a debt name"); return; }
       if(!(balance>0)){ toast("Enter a valid balance"); return; }
-      if(!(payment>=0)){ toast("Enter a valid payment"); return; }
 
       state.debts.push({ id: uuid(), name, balance, apr, payment });
       $("debtName").value=""; $("debtBal").value=""; $("debtApr").value=""; $("debtPay").value="";
@@ -1775,14 +1886,14 @@
 
     $("extraDebt").addEventListener("input", ()=>{
       state.debtPlan.extra = Number($("extraDebt").value||0);
-      save(); renderDebts(); renderDashboard(); renderPay();
+      save(); renderAll();
     });
     $("debtStrategy").addEventListener("change", ()=>{
       state.debtPlan.strategy = $("debtStrategy").value;
-      save(); renderDebts();
+      save(); renderAll();
     });
 
-    // Goals
+    // Goals events
     $("saveGoals").addEventListener("click", ()=>{
       state.goals.emergency = Number($("gEmergency").value||0);
       state.goals.invest = Number($("gInvest").value||0);
@@ -1795,49 +1906,68 @@
       save(); renderAll(); toast("Goals cleared");
     });
 
-    // Profile
-    function updateCalcTotal(){
+    // Profile events
+    ["basePay","bah","bas","incomeMonthly","spouseIncome","spouseEnabled","spouseType","dependents","bahDependents","dutyStation","rank","basEnabled","paySchedule"]
+      .forEach(id=> $(id).addEventListener("input", ()=>{ updateCalcBoxes(); }));
+
+    $("btnUseCalcAsIncome").addEventListener("click", ()=>{
       const base = Number($("basePay").value||0);
       const bah = Number($("bah").value||0);
       const bas = Number($("bas").value||0);
-      const total = base+bah+bas;
-      $("calcTotal").value = total>0 ? fmt(total) : "";
-    }
-    ["basePay","bah","bas"].forEach(id=>{
-      $(id).addEventListener("input", updateCalcTotal);
+      const calc = base+bah+bas;
+      $("incomeMonthly").value = calc>0 ? calc : 0;
+      toast("Used calc total as take-home");
+      updateCalcBoxes();
     });
 
-    $("saveProfile").addEventListener("click", ()=>{
-      state.profile.paySchedule = $("paySchedule").value;
-      state.profile.monthlyIncome = Number($("incomeMonthly").value||0);
-      state.profile.rank = $("rank").value || "";
-      state.profile.basePay = Number($("basePay").value||0);
-      state.profile.bah = Number($("bah").value||0);
-      state.profile.bas = Number($("bas").value||0);
-      save(); renderAll(); toast("Profile saved");
-    });
-
-    // Rank helper (DEMO values, just for mock)
-    const basePayDemo = {
-      E1: 2000, E2: 2250, E3: 2500, E4: 2900,
-      E5: 3300, E6: 3800, E7: 4500, E8: 5200, E9: 6000
-    };
     $("applyRank").addEventListener("click", ()=>{
       const r = $("rank").value;
       if(!r){ toast("Pick a rank first"); return; }
-      const base = basePayDemo[r] || 0;
-      $("basePay").value = base;
-      updateCalcTotal();
-      toast("Base pay filled (demo)");
+
+      // Base pay demo
+      $("basePay").value = basePayDemo[r] || 0;
+
+      // BAS demo
+      const basOn = ($("basEnabled").value === "yes");
+      $("bas").value = basOn ? basDemoEnlisted : 0;
+
+      // BAH demo based on duty station + dependents flag
+      const ds = $("dutyStation").value || "fort_bliss";
+      const dep = ($("bahDependents").value === "yes");
+      const bahVal = (bahDemo[ds] ? (dep ? bahDemo[ds].with : bahDemo[ds].without) : 0);
+      $("bah").value = bahVal;
+
+      updateCalcBoxes();
+      toast("Auto-filled (demo). You can still edit manually.");
+    });
+
+    $("saveProfile").addEventListener("click", ()=>{
+      const p = state.profile;
+      p.paySchedule = $("paySchedule").value;
+      p.monthlyIncome = Number($("incomeMonthly").value||0);
+      p.spouseEnabled = $("spouseEnabled").value;
+      p.spouseType = $("spouseType").value;
+      p.spouseIncome = Number($("spouseIncome").value||0);
+      p.dependents = $("dependents").value;
+      p.bahDependents = $("bahDependents").value;
+      p.dutyStation = $("dutyStation").value;
+
+      p.rank = $("rank").value || "";
+      p.basEnabled = $("basEnabled").value;
+      p.basePay = Number($("basePay").value||0);
+      p.bah = Number($("bah").value||0);
+      p.bas = Number($("bas").value||0);
+
+      save(); renderAll(); toast("Pay setup saved");
     });
 
     // Settings
     $("btnExport").addEventListener("click", ()=>{
       const data = JSON.stringify(state, null, 2);
       openModal("Export Data", `
-        <div class="muted">Copy this JSON and save it. You can import it later.</div>
+        <div class="muted">Copy this JSON to save/backup. You can import it later.</div>
         <div style="height:10px"></div>
-        <textarea id="exportBox" style="min-height:220px">${escapeHtml(data)}</textarea>
+        <textarea style="min-height:220px">${escapeHtml(data)}</textarea>
       `, [
         {label:"Close", kind:"secondary", onClick: closeModal},
         {label:"Copy", kind:"", onClick: ()=>{
@@ -1871,9 +2001,7 @@
 
     $("btnDemo").addEventListener("click", ()=>{
       openModal("Load Demo Data?", `
-        <div class="muted">
-          This will populate MilBudget with realistic example bills, debts, and goals so your friends can test quickly.
-        </div>
+        <div class="muted">This will populate MilBudget with realistic example bills, debts, and goals for testing.</div>
       `, [
         {label:"Cancel", kind:"secondary", onClick: closeModal},
         {label:"Load Demo", kind:"", onClick: ()=>{
@@ -1897,7 +2025,7 @@
     });
 
     $("btnPrint").addEventListener("click", ()=>{
-      const inc = monthlyIncome();
+      const inc = householdIncome();
       const b = billsTotal();
       const g = goalsTotal();
       const d = debtMonthlyTotal();
@@ -1910,11 +2038,11 @@
       const text =
 `MilBudget Summary
 =================
-Monthly income: ${fmt(inc)}
-Bills total:    ${fmt(b)}
-Goals total:    ${fmt(g)}
-Debt payments:  ${fmt(d)}
-Remaining:      ${fmt(rem)}
+Household income: ${fmt(inc)}
+Bills total:      ${fmt(b)}
+Goals total:      ${fmt(g)}
+Debt payments:    ${fmt(d)}
+Remaining:        ${fmt(rem)}
 
 Payday Split (1st/15th)
 ----------------------
@@ -1941,9 +2069,20 @@ ${state.notes || "(none)"}
     });
 
     function loadDemo(){
+      state.user = { name:"MilBudget Demo" };
+
       state.profile.paySchedule = "1st15th";
       state.profile.monthlyIncome = 4200;
+
+      state.profile.spouseEnabled = "yes";
+      state.profile.spouseType = "civilian";
+      state.profile.spouseIncome = 1200;
+      state.profile.dependents = "0";
+      state.profile.bahDependents = "yes";
+      state.profile.dutyStation = "fort_bliss";
+
       state.profile.rank = "E3";
+      state.profile.basEnabled = "yes";
       state.profile.basePay = 2500;
       state.profile.bah = 1600;
       state.profile.bas = 460;
@@ -1965,38 +2104,34 @@ ${state.notes || "(none)"}
       state.debtPlan.strategy = "avalanche";
 
       state.goals = { emergency:200, invest:100, fun:150, groceries:350 };
-      state.notes = "Demo notes: Try adjusting bills and see Payday Split update.";
+      state.notes = "Demo notes: Try changing bills and see Payday Split update.";
       state.feedbackNotes = "";
+
       save();
       renderAll();
     }
 
-    // ---- Make sure global functions exist for onclick in tables
-    // (already assigned above)
+    // Render all
+    function renderAll(){
+      renderDashboard();
+      renderPay();
+      renderBills();
+      renderDebts();
+      renderGoals();
+      renderProfile();
+      renderStatusChip();
+    }
 
-    // ---- Initialize
-    // Apply theme
+    // Init
     document.documentElement.setAttribute("data-theme", state.theme==="light" ? "light" : "dark");
-
-    // Wire settings textareas
+    $("billSort").value = "due";
     $("notes").value = state.notes || "";
     $("feedbackNotes").value = state.feedbackNotes || "";
+    updateUserChip();
 
-    // Default values
-    $("billSort").value = "due";
-
-    // Autosave notes already wired.
-
-    // Initial render
-    renderAll();
-
-    // Handle resize for chart
     window.addEventListener("resize", ()=>renderPie());
 
-    // Prevent broken pie scaling from repeated scale stacking:
-    // Re-render pie by resetting transform each time inside renderPie via new context scale per render.
-    // (Canvas is resized each time, so scale resets.)
-
+    renderAll();
   </script>
 </body>
 </html>
